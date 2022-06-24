@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--UnityAds plugin additions-->
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+	<!-- init section is always evaluated once per architecture -->
+	<trace enable="true"/>
+	<init>
+		<log text="UnityAds init"/>		
+	</init>
+
+  <androidManifestUpdates>
+
+   <addPermission android:name="android.permission.INTERNET" />
+   <addPermission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <addElements tag="application">
+       <activity
+            android:name="com.unity3d.services.ads.adunit.AdUnitActivity"
+            android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen"
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <activity
+            android:name="com.unity3d.services.ads.adunit.AdUnitTransparentActivity"
+            android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen"
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+        <activity
+            android:name="com.unity3d.services.ads.adunit.AdUnitTransparentSoftwareActivity"
+            android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen"
+            android:hardwareAccelerated="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+        <activity
+            android:name="com.unity3d.services.ads.adunit.AdUnitSoftwareActivity"
+            android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen"
+            android:hardwareAccelerated="false"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+    </addElements>
+
+	
+	<!-- Read App ID from plugin project settings and add to the manifest 
+    <setStringFromProperty result="GameId" ini="Engine" section="/Script/UnityAds.UnityAdsSettings" property="GameId" default=""/>
+    <setElement result="GameIdMetadata" value="meta-data"/>
+    <addAttribute tag="$GameIdMetadata" name="android:name" value="com.epicgames.ue4.UnityAds.GameId"/>
+    <addAttribute tag="$GameIdMetadata" name="android:value" value="$S(GameId)"/>
+    <addElement tag="application" name="GameIdMetadata"/>-->
+
+  </androidManifestUpdates>
+
+	<!-- optional additions to proguard -->
+	<proguardAdditions>
+		<insert>
+          # Keep filenames and line numbers for stack traces
+          -keepattributes SourceFile,LineNumberTable
+
+          # Keep JavascriptInterface for WebView bridge
+          -keepattributes JavascriptInterface
+
+          # Sometimes keepattributes is not enough to keep annotations
+          -keep class android.webkit.JavascriptInterface {
+            *;
+          }
+
+          # Keep all classes in Unity Ads package
+          -keep class com.unity3d.ads.** {
+            *;
+          }
+
+          # Keep all classes in Unity Services package
+          -keep class com.unity3d.services.** {
+            *;
+          }
+    </insert>
+	</proguardAdditions>
+	
+	<!-- optional files or directories to copy to Intermediate/Android/APK -->
+ 	<resourceCopies>		
+		<!--<copyFile src="$S(PluginDir)/../lib/Android/unity-ads.aar" dst="$S(BuildDir)/libs/unity-ads.aar" />-->
+    <copyFile src="C:/Users/SANJAY/Documents/Unreal Projects/buuldingWars/Plugins/UnityAds-master/lib/Android/unity-ads.aar" dst="$S(BuildDir)/libs/unity-ads.aar" />
+
+	</resourceCopies>
+
+
+  <!-- optional base build.gradle additions -->
+  
+  <baseBuildGradleAdditions>
+    <insert>
+         allprojects {
+           repositories {
+             repositories {
+               flatDir {
+    </insert>
+   <!-- <insertValue value="dirs 
+ $S(AbsPluginDir)/../lib/Android"/>-->
+ <insertValue value="dirs 'C:/Users/SANJAY/Documents/Unreal Projects/buuldingWars/Plugins/UnityAds-master/lib/Android'"/>
+ 
+    <insertNewline/>
+    <insert>
+               }
+             }
+           }
+         }
+        </insert>
+  </baseBuildGradleAdditions>
+ 
+
+  <!-- optional base build.gradle buildscript additions -->
+  <buildscriptGradleAdditions>  </buildscriptGradleAdditions>
+
+  <!-- optional app build.gradle additions -->
+  <buildGradleAdditions>
+        <insert>
+          dependencies.implementation(name: 'unity-ads', ext: 'aar')
+        </insert>
+  </buildGradleAdditions>
+
+	<!-- optional additions to the GameActivity imports in GameActivity.java -->
+	<gameActivityImportAdditions>
+		<insert>
+  import com.unity3d.ads.IUnityAdsLoadListener;
+  import com.unity3d.ads.IUnityAdsShowListener;
+  import com.unity3d.ads.UnityAdsShowOptions;
+
+  
+  import com.unity3d.ads.IUnityAdsInitializationListener;
+  import com.unity3d.ads.UnityAds;
+ 
+	  import android.webkit.*;
+      //import android.webkit.WebViewClient;
+
+    </insert>
+	</gameActivityImportAdditions>
+
+	<gameActivityImplementsAdditions>
+    <insert>
+      IUnityAdsInitializationListener,
+    </insert>
+</gameActivityImplementsAdditions>
+
+
+	<!-- optional additions to GameActivity onCreate in GameActivity.java -->
+	<gameActivityOnCreateAdditions>
+    <insert>
+     
+	    UnityAds.initialize(getApplicationContext(), gameId, testmode, this);
+       
+
+    </insert>
+  </gameActivityOnCreateAdditions>
+
+	<!-- optional additions to the GameActivity class in GameActivity.java -->
+	<gameActivityClassAdditions>
+		<insert>
+     
+       final private boolean testmode = true;
+      private String gameId = "4808293"; //Replace with your GameId from UnityAds Dashboard
+
+      private String rewardedVideoId = "Rewarded_Android"; //Replace with your ZoneId from UnityAds Dashboard
+	    private String InterstitialId = "Interstitial_Android"; //Replace with your ZoneId from UnityAds Dashboard
+	    private String BannerId = "Banner_Android"; //Replace with your ZoneId from UnityAds Dashboard
+
+
+  private IUnityAdsLoadListener loadListener = new IUnityAdsLoadListener() {
+     @Override
+     public void onUnityAdsAdLoaded(String placementId) {
+       if (placementId.equals(InterstitialId)) {
+        UnityAds.show((Activity)getApplicationContext(),InterstitialId, new UnityAdsShowOptions(), showListener);
+
+       }
+       else
+       { 
+         if (placementId.equals(rewardedVideoId)) {
+        UnityAds.show((Activity)getApplicationContext(),rewardedVideoId, new UnityAdsShowOptions(), showListener);
+
+       }
+
+       }
+          
+        
+     }
+
+     @Override
+     public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
+        //Log.e("UnityAdsExample", "Unity Ads failed to load ad for " + placementId + " with error: [" + error + "] " + message);
+     }
+  };
+
+  private IUnityAdsShowListener showListener = new IUnityAdsShowListener() {
+     @Override
+     public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
+        //Log.e("UnityAdsExample", "Unity Ads failed to show ad for " + placementId + " with error: [" + error + "] " + message);
+     }
+
+     @Override
+     public void onUnityAdsShowStart(String placementId) {
+       // Log.v("UnityAdsExample", "onUnityAdsShowStart: " + placementId);
+     }
+
+     @Override
+     public void onUnityAdsShowClick(String placementId) {
+       // Log.v("UnityAdsExample", "onUnityAdsShowClick: " + placementId);
+     }
+
+     @Override
+     public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
+       // Log.v("UnityAdsExample", "onUnityAdsShowComplete: " + placementId);
+     }
+  };
+
+  @Override
+  public void onInitializationComplete() {
+      //Log.e("UnityAdsExample", "Unity Ads initialization success:" );
+  }
+
+  @Override
+  public void onInitializationFailed(UnityAds.UnityAdsInitializationError error, String message) {
+    // Log.e("UnityAdsExample", "Unity Ads initialization failed with error: [" + error + "] " + message);
+  }
+
+      //interstitial ad
+
+
+      public void AndroidThunkJava_UnityAds_ShowInterstitialAd()
+      {
+          Log.debug( "AndroidThunkJava_UnityAds_ShowInterstitialAd()" + InterstitialId);
+    
+	    UnityAds.load(InterstitialId, loadListener); //rewardedVideo
+      //Log.debug( "AndroidThunkJava_UnityAds_ShowInterstitialAd()" + InterstitialId);
+      }
+
+ 
+    </insert>
+	</gameActivityClassAdditions>
+	
+	<!-- optional additions to GameActivity onCreate metadata reading in GameActivity.java -->
+	<gameActivityReadMetadataAdditions>
+	<insert>
+
+  </insert>
+	</gameActivityReadMetadataAdditions>
+	
+
+
+	<!-- optional additions to GameActivity onDestroy in GameActivity.java -->
+	<gameActivityOnDestroyAdditions>
+		<insert>
+		
+		</insert>
+	</gameActivityOnDestroyAdditions>
+	
+	
+	<!-- optional additions to GameActivity onStart in GameActivity.java -->
+	<gameActivityOnStartAdditions>
+		<insert>
+		
+		</insert>
+	</gameActivityOnStartAdditions>
+
+	<!-- optional additions to GameActivity onStop in GameActivity.java -->
+	<gameActivityOnStopAdditions>
+		<insert>
+		
+		</insert>
+	</gameActivityOnStopAdditions>
+	
+
+	<!-- optional additions to GameActivity onPause in GameActivity.java	-->
+	<gameActivityOnPauseAdditions>
+		<insert>
+		
+		</insert>
+	</gameActivityOnPauseAdditions>
+
+
+	<!-- optional additions to GameActivity onResume in GameActivity.java	-->
+	<gameActivityOnResumeAdditions>
+		<insert>
+		//UnityAds.changeActivity(this);
+		</insert>
+	</gameActivityOnResumeAdditions>
+
+
+	<!-- optional additions to GameActivity onActivityResult in GameActivity.java -->
+	<gameActivityOnActivityResultAdditions>
+	</gameActivityOnActivityResultAdditions>
+	
+
+	<!-- optional libraries to load in GameActivity.java before libUE4.so -->
+	<soLoadLibrary>
+		<!-- need this if plugin enabled and supported architecture, even if not packaged for GearVR -->
+	<!-- 	<if condition="bSupported">
+			<true>
+				<loadLibrary name="vrapi" failmsg="GearVR library not loaded and required!" />
+			</true>
+		</if> -->
+	</soLoadLibrary>
+</root>
