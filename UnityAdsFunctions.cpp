@@ -70,7 +70,7 @@ void UUnityAdsFunctions::UnityAdsShowInterstitialAds()
 	{
 
 		FJavaWrapper::CallVoidMethod(Env, FJavaWrapper::GameActivityThis, AndroidThunkJava_UnityAds_ShowInterstitialAd);
-
+		//i can see the below log statement inside the game logs
 		UE_LOG(LogAndroid, Warning, TEXT("I found the java method interstitial\n"));
 	}
 	else
